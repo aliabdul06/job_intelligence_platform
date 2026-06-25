@@ -2,7 +2,6 @@ import re
 import os
 import warnings
 from collections import Counter
-
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -39,16 +38,17 @@ print("  TASK 1: Extract & Rank Top Skills")
 print("─" * 60)
 
 # 2a. Structured skills column  -------------------------------------------
-# Skills are comma-separated in the 'skills' column
-structured_skills = (
+# Skills are comma-separated in the 'skills' column. We count each skill at
+# most ONCE per posting (a single posting can list a skill in both the
+# structured column and the description — we don't want to double-count).
+structured_skill_sets = (
     df["skills"]
-    .dropna()
-    .str.split(",")
-    .explode()
-    .str.strip()
-    .str.lower()
+    .fillna("")
+    .apply(lambda s: {x.strip().lower() for x in str(s).split(",") if x.strip() and x.strip().lower() != "nan"})
 )
-structured_skill_counts = Counter(structured_skills)
+structured_skill_counts = Counter()
+for s_set in structured_skill_sets:
+    structured_skill_counts.update(s_set)
 
 # 2b. NLP-based skill extraction from descriptions  -----------------------
 # Curated skill/tech keyword list (case-insensitive regex)
@@ -98,8 +98,9 @@ def extract_skills_from_text(text: str) -> list[str]:
     for kw in SKILL_KEYWORDS:
         pattern = r"\b" + kw
         if re.search(pattern, text_lower):
-            # Normalize the keyword for counting
-            clean = re.sub(r"[\\+]", "", kw).replace("\\b", "").strip()
+            # Normalize the keyword for counting: strip regex syntax (\b, +, ?)
+            clean = re.sub(r"\\b|\\\+|\\\?|\?", "", kw)
+            clean = clean.replace("\\+", "").replace("\\", "").strip()
             # Normalize some aliases
             clean = clean.replace("genai", "generative ai")
             clean = clean.replace("large language model", "llm")
@@ -109,20 +110,22 @@ def extract_skills_from_text(text: str) -> list[str]:
             clean = clean.replace("scikit.learn", "scikit-learn")
             clean = clean.replace("fine.tuning", "fine-tuning")
             clean = clean.replace("google cloud", "gcp")
-            clean = clean.replace("agents?", "agents")
             found.append(clean)
     return found
 
-# Extract skills from descriptions
+# Extract skills from descriptions (skill at most once per posting via set)
 nlp_skill_series = df["description"].apply(extract_skills_from_text)
-nlp_skill_counts = Counter([s for skills in nlp_skill_series for s in skills])
+nlp_skill_sets = nlp_skill_series.apply(lambda lst: set(lst) if isinstance(lst, list) else set())
+nlp_skill_counts = Counter()
+for s_set in nlp_skill_sets:
+    nlp_skill_counts.update(s_set)
 
-# Combine structured + NLP-extracted skills
+# Combine structured + NLP-extracted as a UNION per posting, so each skill is
+# counted at most once per posting. This guarantees mentions <= total postings.
+PLACEHOLDER_SKILLS = {"", "nan", "none", "null"}
 combined_counts = Counter()
-for skill, count in structured_skill_counts.items():
-    combined_counts[skill] += count
-for skill, count in nlp_skill_counts.items():
-    combined_counts[skill] += count
+for s_set, nlp_set in zip(structured_skill_sets, nlp_skill_sets):
+    combined_counts.update((s_set | nlp_set) - PLACEHOLDER_SKILLS)
 
 # Top 20 skills
 top_skills = combined_counts.most_common(20)
@@ -170,9 +173,13 @@ def categorize_role(title: str) -> str:
     for category, pattern in ROLE_CATEGORIES.items():
         if re.search(pattern, title_lower):
             return category
+    return "Other"
 
 df["role_category"] = df["job_title"].apply(categorize_role)
+# Exclude the catch-all "Other" bucket from all role rankings/visuals so
+# unnamed roles never appear as a top category.
 role_counts = df["role_category"].value_counts()
+role_counts = role_counts[role_counts.index != "Other"]
 
 print("\n TOP ROLES BY POSTING COUNT:\n")
 print(f"{'Role Category':<35}{'Count':<8}{'%':<8}")
@@ -259,7 +266,10 @@ def extract_region(location: str) -> str:
     return parts[0].strip()
 
 df["region"] = df["location"].apply(extract_region)
-region_counts = df["region"].value_counts().head(15)
+# Drop "Unknown" / "None" placeholder regions from rankings
+region_counts_full = df["region"].value_counts()
+region_counts_full = region_counts_full[~region_counts_full.index.isin(["Unknown", "None", "nan", ""])]
+region_counts = region_counts_full.head(15)
 
 print("\n TOP 15 REGIONS BY POSTINGS:\n")
 print(f"{'Region':<40}{'Postings':<10}")
@@ -272,15 +282,19 @@ print("\n TOP SKILLS PER ROLE CATEGORY:\n")
 role_skill_map = {}
 for _, row in df.iterrows():
     role = row["role_category"]
-    # Combine structured skills + NLP extracted
-    skills_list = []
+    if role in ("Other", "", "nan", "None") or pd.isna(role):
+        continue
+    posting_skills = set()
     if pd.notna(row["skills"]) and row["skills"] != "nan":
-        skills_list.extend([s.strip().lower() for s in str(row["skills"]).split(",")])
-    skills_list.extend(extract_skills_from_text(row["description"]))
-    for skill in skills_list:
-        if role not in role_skill_map:
-            role_skill_map[role] = Counter()
-        role_skill_map[role][skill] += 1
+        posting_skills.update(
+            s.strip().lower() for s in str(row["skills"]).split(",")
+            if s.strip() and s.strip().lower() != "nan"
+        )
+    posting_skills.update(extract_skills_from_text(row["description"]))
+    posting_skills -= PLACEHOLDER_SKILLS
+    if role not in role_skill_map:
+        role_skill_map[role] = Counter()
+    role_skill_map[role].update(posting_skills)
 
 for role in role_counts.index[:10]:  # top 10 roles
     if role in role_skill_map:
@@ -358,7 +372,7 @@ top_roles = role_counts.head(8)
 other_count = role_counts.iloc[8:].sum()
 pie_data = pd.concat([top_roles, pd.Series({"Other": other_count})])
 colors_pie = sns.color_palette("Set2", len(pie_data))
-wedges, texts, autotexts = ax.pie(
+wedges, texts, autotexts = ax.pie(  # type: ignore
     pie_data.values, labels=pie_data.index, autopct="%1.1f%%",
     colors=colors_pie, pctdistance=0.82, startangle=140,
     wedgeprops=dict(width=0.55, edgecolor="white", linewidth=2)

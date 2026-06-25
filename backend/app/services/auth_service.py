@@ -85,6 +85,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
 
     from bson import ObjectId
 
+    if not ObjectId.is_valid(user_id):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token subject",
+        )
+
     user = await database.users.find_one({"_id": ObjectId(user_id)})
     if not user:
         raise HTTPException(

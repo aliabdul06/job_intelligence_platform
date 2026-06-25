@@ -1,0 +1,362 @@
+.container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-4xl);
+}
+
+.header {
+  margin-bottom: var(--space-2xl);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* ── Regions Grid / Sidebar ───────────────────────── */
+.regionsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.regionsGrid h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-height: 580px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+}
+
+.regionCard {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-md);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.selectedCard {
+  background: var(--accent-blue-glow) !important;
+  border-color: var(--accent-blue) !important;
+  box-shadow: var(--shadow-glow-blue) !important;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pin {
+  font-size: var(--text-base);
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.countRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.countVal {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.miniBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(147, 51, 234, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.miniFill {
+  height: 100%;
+  background: var(--purple-600);
+  border-radius: var(--radius-full);
+}
+
+/* ── Details Panel ────────────────────────────────── */
+.detailsPanel {
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: 0.1s;
+}
+
+.statsCard {
+  padding: var(--space-xl);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.panelLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  letter-spacing: 0.1em;
+}
+
+.panelTitle {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.totalBadge {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.totalBadge strong {
+  color: var(--text-primary);
+}
+
+.panelGrids {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.statsSection h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fullWidth {
+  grid-column: span 2;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.skillsInspector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Experience Row ────────────────────────────────── */
+.expRow {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.expLevel {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.expBar {
+  height: 8px;
+  background: rgba(147, 51, 234, 0.15);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.expFill {
+  height: 100%;
+  background: var(--purple-600);
+  border-radius: var(--radius-full);
+}
+
+.expPct {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* ── Prompts / States ─────────────────────────────── */
+.selectPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-4xl) var(--space-xl);
+  gap: var(--space-sm);
+}
+
+.promptIcon {
+  font-size: var(--text-4xl);
+}
+
+.selectPrompt h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.selectPrompt p {
+  color: var(--text-secondary);
+  max-width: 400px;
+}
+
+.errorCard {
+  text-align: center;
+  padding: var(--space-4xl) var(--space-xl);
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.errorIcon {
+  font-size: var(--text-4xl);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-md);
+  display: block;
+}
+
+.noData {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: var(--text-sm);
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .grid {
+    flex-direction: row;
+    overflow-x: auto;
+    max-height: unset;
+    padding-bottom: var(--space-sm);
+  }
+
+  .regionCard {
+    width: auto;
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+
+  .panelGrids {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: span 1;
+  }
+}
+
+/* ── Custom Static Visual Integrations ─────────── */
+.headerTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.tabHeader {
+  display: flex;
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid var(--border-default);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  gap: 2px;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.activeTab {
+  background: var(--accent-blue-glow) !important;
+  color: var(--accent-cyan) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.chartCard {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  width: 100%;
+}
+
+.imageContainer {
+  width: 100%;
+  max-height: 520px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-md);
+  background: rgba(147, 51, 234, 0.04);
+  padding: var(--space-md);
+}
+
+.chartImage {
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  filter: drop-shadow(0 4px 12px rgba(147, 51, 234, 0.16));
+  transition: transform var(--transition-base);
+}
+
+.chartImage:hover {
+  transform: scale(1.02);
+}

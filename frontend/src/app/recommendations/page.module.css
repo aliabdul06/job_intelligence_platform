@@ -1,0 +1,198 @@
+.container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-4xl);
+}
+
+.header {
+  margin-bottom: var(--space-2xl);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.recommendationsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.recommendationsList h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Skills Gap Card ──────────────────────────────── */
+.skillsGapSection {
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: 0.1s;
+  position: sticky;
+  top: calc(var(--navbar-height) + 20px);
+}
+
+.gapCard {
+  padding: var(--space-xl);
+}
+
+.gapCard h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.gapDescription {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.gapList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.gapItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gapSkill {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.badge {
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
+.mentionsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mentionsVal {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.gapBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(147, 51, 234, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.gapFill {
+  height: 100%;
+  background: var(--purple-600);
+  border-radius: var(--radius-full);
+}
+
+.noGap {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ── Profile Empty Setup Prompt ───────────────────── */
+.setupPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-4xl) var(--space-xl);
+  max-width: 600px;
+  margin: 0 auto;
+  gap: var(--space-md);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.setupIcon {
+  font-size: var(--text-4xl);
+  color: var(--accent-cyan);
+}
+
+.setupPrompt h2 {
+  font-size: var(--text-xl);
+  font-weight: 800;
+}
+
+.setupPrompt p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── States ───────────────────────────────────────── */
+.emptyRecs {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.emptyRecs h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.emptyRecs p {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.errorCard {
+  text-align: center;
+  padding: var(--space-4xl) var(--space-xl);
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.errorIcon {
+  font-size: var(--text-4xl);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-md);
+  display: block;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .skillsGapSection {
+    position: static;
+  }
+}

@@ -1,0 +1,184 @@
+.container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-4xl);
+}
+
+.header {
+  margin-bottom: var(--space-2xl);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.mainPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.sidebarPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: 0.1s;
+}
+
+/* ── Card Styles ──────────────────────────────────── */
+.card {
+  padding: var(--space-xl);
+}
+
+.card h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+
+.sideDescription {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+/* ── Forms ────────────────────────────────────────── */
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.disabledInput {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(147, 51, 234, 0.05);
+}
+
+.helperText {
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* ── Tag Manager UI ───────────────────────────────── */
+.tagConsole {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  min-height: 80px;
+  padding: var(--space-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--accent-blue-glow);
+  color: var(--accent-blue);
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.roleTag {
+  background: var(--accent-violet-glow);
+  color: var(--accent-violet);
+  border-color: rgba(147, 51, 234, 0.25);
+}
+
+.tagClose {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.tagClose:hover {
+  opacity: 0.7;
+}
+
+.noTags {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Action Panel Alerts ──────────────────────────── */
+.actionPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.successAlert {
+  background: rgba(147, 51, 234, 0.1);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.errorAlert {
+  background: rgba(147, 51, 234, 0.1);
+  color: var(--accent-rose);
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}

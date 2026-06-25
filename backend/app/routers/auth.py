@@ -4,7 +4,7 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, status
 
 from app.database import database
-from app.models.user import UserCreate, UserLogin, TokenResponse
+from app.models.user import RefreshTokenRequest, TokenResponse, UserCreate, UserLogin
 from app.services.auth_service import (
     hash_password,
     verify_password,
@@ -69,8 +69,8 @@ async def login(payload: UserLogin):
 
 
 @router.post("/refresh", response_model=TokenResponse)
-async def refresh_token(refresh_token: str):
-    payload = decode_token(refresh_token)
+async def refresh_token(payload_in: RefreshTokenRequest):
+    payload = decode_token(payload_in.refresh_token)
 
     if payload.get("type") != "refresh":
         raise HTTPException(
@@ -79,6 +79,12 @@ async def refresh_token(refresh_token: str):
         )
 
     user_id = payload.get("sub")
+    if not ObjectId.is_valid(user_id):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token subject",
+        )
+
     # Verify user still exists
     user = await database.users.find_one({"_id": ObjectId(user_id)})
     if not user:

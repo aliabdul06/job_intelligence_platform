@@ -1,0 +1,101 @@
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all var(--transition-base);
+}
+
+.card.visible {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.card.blue .iconWrap {
+  background: var(--accent-blue-glow);
+}
+.card.cyan .iconWrap {
+  background: var(--accent-cyan-glow);
+}
+.card.violet .iconWrap {
+  background: var(--accent-violet-glow);
+}
+.card.emerald .iconWrap {
+  background: var(--accent-emerald-glow);
+}
+.card.amber .iconWrap {
+  background: var(--accent-amber-glow);
+}
+.card.rose .iconWrap {
+  background: var(--accent-rose-glow);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.glow {
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.card.blue .glow { background: var(--accent-blue); }
+.card.cyan .glow { background: var(--accent-cyan); }
+.card.violet .glow { background: var(--accent-violet); }
+.card.emerald .glow { background: var(--accent-emerald); }
+.card.amber .glow { background: var(--accent-amber); }
+.card.rose .glow { background: var(--accent-rose); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

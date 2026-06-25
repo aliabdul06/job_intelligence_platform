@@ -1,14 +1,12 @@
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.config import settings
 from app.database import database
+from app.security import CacheControlMiddleware, RateLimitMiddleware, SecurityHeadersMiddleware
 
 # ── Router imports ─────────────────────────────────────────────────────────
 from app.routers import auth, users, jobs, search, skills, regions, recommendations, homepage
-
 
 # ── Lifespan (startup / shutdown) ──────────────────────────────────────────
 @asynccontextmanager
@@ -16,7 +14,6 @@ async def lifespan(app: FastAPI):
     await database.connect()
     yield
     await database.disconnect()
-
 
 # ── Application ────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -30,7 +27,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
 # ── CORS ───────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
@@ -40,6 +36,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(CacheControlMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 # ── Mount routers under /api/v1 ───────────────────────────────────────────
 API_PREFIX = "/api/v1"
@@ -53,7 +52,6 @@ app.include_router(regions.router, prefix=API_PREFIX)
 app.include_router(recommendations.router, prefix=API_PREFIX)
 app.include_router(homepage.router, prefix=API_PREFIX)
 
-
 # ── Root health-check ─────────────────────────────────────────────────────
 @app.get("/", tags=["Health"])
 async def root():
@@ -63,7 +61,6 @@ async def root():
         "version": settings.APP_VERSION,
         "docs": "/docs",
     }
-
 
 @app.get("/health", tags=["Health"])
 async def health_check():

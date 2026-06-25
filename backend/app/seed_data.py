@@ -93,7 +93,8 @@ def extract_skills_from_text(text: str) -> list[str]:
     for kw in SKILL_KEYWORDS:
         pattern = r"\b" + kw
         if re.search(pattern, text_lower):
-            clean = re.sub(r"[\\+]", "", kw).replace(r"\b", "").strip()
+            clean = re.sub(r"\\b|\\\+|\\\?|\?", "", kw)
+            clean = clean.replace("\\+", "").replace("\\", "").strip()
             clean = clean.replace("genai", "generative ai")
             clean = clean.replace("large language model", "llm")
             clean = clean.replace("retrieval.augmented", "rag")
@@ -102,7 +103,6 @@ def extract_skills_from_text(text: str) -> list[str]:
             clean = clean.replace("scikit.learn", "scikit-learn")
             clean = clean.replace("fine.tuning", "fine-tuning")
             clean = clean.replace("google cloud", "gcp")
-            clean = clean.replace("agents?", "agents")
             found.append(clean)
     return found
 
@@ -156,6 +156,9 @@ async def seed():
             df["experience_level"] = df["experience"].map(EXPERIENCE_MAP).fillna("Not Specified")
         if "role_category" not in df.columns:
             df["role_category"] = df["job_title"].apply(categorize_role)
+        else:
+            # Backfill any missing/NaN role categories from older enrichment runs
+            df["role_category"] = df["role_category"].fillna("Other").replace("", "Other")
         if "region" not in df.columns:
             df["region"] = df["location"].apply(extract_region)
 
@@ -196,13 +199,14 @@ async def seed():
     print("[3/6] Computing skills analytics ...")
     await db["skills_analytics"].drop()
 
-    # Combine structured + NLP skills
+    # Combine structured + NLP skills as a UNION per posting, so a skill is
+    # counted at most once per posting (prevents mentions > total_postings).
     combined_counts = Counter()
+    PLACEHOLDER_SKILLS = {"", "nan", "none", "null"}
     for doc in jobs_docs:
-        for s in doc["skills"]:
-            combined_counts[s.lower()] += 1
-        for s in doc["nlp_extracted_skills"]:
-            combined_counts[s.lower()] += 1
+        posting_skills = {s.lower().strip() for s in doc["skills"]} | {s.lower().strip() for s in doc["nlp_extracted_skills"]}
+        posting_skills -= PLACEHOLDER_SKILLS
+        combined_counts.update(posting_skills)
 
     skills_docs = [
         {"skill": skill, "mentions": count}
@@ -215,9 +219,10 @@ async def seed():
     # ── 4. Compute roles, experience, regions analytics ────────────────
     print("[4/6] Computing roles, experience, regions analytics ...")
 
-    # Roles
+    # Roles (exclude the "Other" catch-all from rankings)
     await db["roles_analytics"].drop()
     role_counts = df["role_category"].value_counts()
+    role_counts = role_counts[role_counts.index != "Other"]
     roles_docs = [
         {"role": role, "count": int(count)}
         for role, count in role_counts.items()
@@ -238,9 +243,10 @@ async def seed():
     if exp_docs:
         await db["experience_analytics"].insert_many(exp_docs)
 
-    # Regions
+    # Regions (drop placeholders so "Unknown"/"None" never surfaces)
     await db["regions_analytics"].drop()
     region_counts = df["region"].value_counts()
+    region_counts = region_counts[~region_counts.index.isin(["Unknown", "None", "nan", ""])]
     region_docs = [
         {"region": region, "count": int(count)}
         for region, count in region_counts.items()
@@ -257,10 +263,13 @@ async def seed():
     role_skill_map = {}
     for doc in jobs_docs:
         role = doc["role_category"]
-        all_skills = [s.lower() for s in doc["skills"]] + [s.lower() for s in doc["nlp_extracted_skills"]]
+        if role in ("Other", "", "nan", "None"):
+            continue
+        posting_skills = {s.lower().strip() for s in doc["skills"]} | {s.lower().strip() for s in doc["nlp_extracted_skills"]}
+        posting_skills -= PLACEHOLDER_SKILLS
         if role not in role_skill_map:
             role_skill_map[role] = Counter()
-        role_skill_map[role].update(all_skills)
+        role_skill_map[role].update(posting_skills)
 
     sbr_docs = []
     for role in role_counts.index:

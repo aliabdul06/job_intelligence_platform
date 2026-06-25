@@ -1,0 +1,133 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height) - 80px);
+  padding: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.orb1,
+.orb2 {
+  display: none;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--space-md);
+  color: var(--purple-600);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--accent-rose);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: var(--text-base);
+  margin-top: var(--space-sm);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.switchText {
+  text-align: center;
+  margin-top: var(--space-xl);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.switchLink {
+  color: var(--accent-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switchLink:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
